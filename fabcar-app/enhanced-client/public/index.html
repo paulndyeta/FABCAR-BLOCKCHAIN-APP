@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FabCar Blockchain Application</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .main-content {
+            padding: 30px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            padding: 25px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            background: #f9f9f9;
+        }
+        
+        .section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+        
+        .results {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .car-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        
+        .car-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        }
+        
+        .car-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .car-id {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .car-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+        }
+        
+        .detail-item {
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .detail-value {
+            color: #2c3e50;
+            font-size: 1.1em;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 4px solid #28a745;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-available { background: #28a745; }
+        .status-sold { background: #dc3545; }
+        .status-maintenance { background: #ffc107; }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .car-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚗 FabCar Blockchain</h1>
+            <p>Hyperledger Fabric Car Ownership Management System</p>
+        </div>
+        
+        <div class="main-content">
+            <!-- Query Section -->
+            <div class="section">
+                <h2>🔍 Query Cars</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="queryCarNumber">Car Number:</label>
+                        <input type="text" id="queryCarNumber" placeholder="e.g., CAR0">
+                    </div>
+                    <div class="form-group">
+                        <label for="queryOwner">Owner Name:</label>
+                        <input type="text" id="queryOwner" placeholder="e.g., Tomoko">
+                    </div>
+                    <div class="form-group">
+                        <label for="queryMake">Car Make:</label>
+                        <input type="text" id="queryMake" placeholder="e.g., Toyota">
+                    </div>
+                </div>
+                <div>
+                    <button class="btn" onclick="queryAllCars()">Show All Cars</button>
+                    <button class="btn" onclick="queryCar()">Query Specific Car</button>
+                    <button class="btn" onclick="queryByOwner()">Query by Owner</button>
+                    <button class="btn" onclick="queryByMake()">Query by Make</button>
+                </div>
+                <div id="queryResults" class="results" style="display: none;"></div>
+            </div>
+            
+            <!-- Create Car Section -->
+            <div class="section">
+                <h2>➕ Create New Car</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="createCarNumber">Car Number*:</label>
+                        <input type="text" id="createCarNumber" placeholder="e.g., CAR10" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="createMake">Make*:</label>
+                        <input type="text" id="createMake" placeholder="e.g., Honda" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="createModel">Model*:</label>
+                        <input type="text" id="createModel" placeholder="e.g., Civic" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="createColor">Color*:</label>
+                        <input type="text" id="createColor" placeholder="e.g., blue" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="createOwner">Owner*:</label>
+                        <input type="text" id="createOwner" placeholder="e.g., John Doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="createYear">Year:</label>
+                        <input type="number" id="createYear" placeholder="e.g., 2023" min="1900" max="2030">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="createMileage">Mileage:</label>
+                        <input type="number" id="createMileage" placeholder="e.g., 5000" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="createPrice">Price ($):</label>
+                        <input type="number" id="createPrice" placeholder="e.g., 25000" min="0" step="0.01">
+                    </div>
+                </div>
+                <button class="btn btn-success" onclick="createCar()">Create Car</button>
+                <div id="createResults" class="results" style="display: none;"></div>
+            </div>
+            
+            <!-- Change Owner Section -->
+            <div class="section">
+                <h2>🔄 Change Car Ownership</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="changeCarNumber">Car Number*:</label>
+                        <input type="text" id="changeCarNumber" placeholder="e.g., CAR0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newOwner">New Owner*:</label>
+                        <input type="text" id="newOwner" placeholder="e.g., Jane Smith" required>
+                    </div>
+                </div>
+                <button class="btn btn-warning" onclick="changeOwner()">Change Owner</button>
+                <div id="changeResults" class="results" style="display: none;"></div>
+            </div>
+            
+            <!-- Initialize Section -->
+            <div class="section">
+                <h2>🚀 Initialize Ledger</h2>
+                <p>Initialize the blockchain ledger with sample car data for testing.</p>
+                <button class="btn btn-danger" onclick="initializeLedger()">Initialize Ledger</button>
+                <div id="initResults" class="results" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api';
+        
+        // Utility functions
+        function showLoading(elementId) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.innerHTML = '<div class="loading">Loading...</div>';
+        }
+        
+        function showError(elementId, message) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.innerHTML = `<div class="error">❌ Error: ${message}</div>`;
+        }
+        
+        function showSuccess(elementId, message) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.innerHTML = `<div class="success">✅ ${message}</div>`;
+        }
+        
+        function renderCars(cars, elementId) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            
+            if (!cars || cars.length === 0) {
+                element.innerHTML = '<div class="loading">No cars found.</div>';
+                return;
+            }
+            
+            let html = '';
+            cars.forEach(carData => {
+                const car = carData.Record || carData;
+                const carId = carData.Key || 'Unknown';
+                
+                html += `
+                    <div class="car-card">
+                        <div class="car-header">
+                            <div class="car-id">${carId}</div>
+                            <div>
+                                <span class="status-indicator status-${car.status || 'available'}"></span>
+                                ${car.status || 'available'}
+                            </div>
+                        </div>
+                        <div class="car-details">
+                            <div class="detail-item">
+                                <div class="detail-label">Make</div>
+                                <div class="detail-value">${car.make}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Model</div>
+                                <div class="detail-value">${car.model}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Color</div>
+                                <div class="detail-value">${car.color}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Owner</div>
+                                <div class="detail-value">${car.owner}</div>
+                            </div>
+                            ${car.year ? `
+                            <div class="detail-item">
+                                <div class="detail-label">Year</div>
+                                <div class="detail-value">${car.year}</div>
+                            </div>` : ''}
+                            ${car.mileage ? `
+                            <div class="detail-item">
+                                <div class="detail-label">Mileage</div>
+                                <div class="detail-value">${car.mileage.toLocaleString()} miles</div>
+                            </div>` : ''}
+                            ${car.price ? `
+                            <div class="detail-item">
+                                <div class="detail-label">Price</div>
+                                <div class="detail-value">$${car.price.toLocaleString()}</div>
+                            </div>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            element.innerHTML = html;
+        }
+        
+        // API functions
+        async function queryAllCars() {
+            showLoading('queryResults');
+            try {
+                const response = await fetch(`${API_BASE}/cars`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    renderCars(result.data, 'queryResults');
+                } else {
+                    showError('queryResults', result.error);
+                }
+            } catch (error) {
+                showError('queryResults', error.message);
+            }
+        }
+        
+        async function queryCar() {
+            const carNumber = document.getElementById('queryCarNumber').value.trim();
+            if (!carNumber) {
+                showError('queryResults', 'Please enter a car number');
+                return;
+            }
+            
+            showLoading('queryResults');
+            try {
+                const response = await fetch(`${API_BASE}/cars/${carNumber}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    renderCars([{ Key: carNumber, Record: result.data }], 'queryResults');
+                } else {
+                    showError('queryResults', result.error);
+                }
+            } catch (error) {
+                showError('queryResults', error.message);
+            }
+        }
+        
+        async function queryByOwner() {
+            const owner = document.getElementById('queryOwner').value.trim();
+            if (!owner) {
+                showError('queryResults', 'Please enter an owner name');
+                return;
+            }
+            
+            showLoading('queryResults');
+            try {
+                const response = await fetch(`${API_BASE}/cars/owner/${encodeURIComponent(owner)}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    renderCars(result.data, 'queryResults');
+                } else {
+                    showError('queryResults', result.error);
+                }
+            } catch (error) {
+                showError('queryResults', error.message);
+            }
+        }
+        
+        async function queryByMake() {
+            const make = document.getElementById('queryMake').value.trim();
+            if (!make) {
+                showError('queryResults', 'Please enter a car make');
+                return;
+            }
+            
+            showLoading('queryResults');
+            try {
+                const response = await fetch(`${API_BASE}/cars/make/${encodeURIComponent(make)}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    renderCars(result.data, 'queryResults');
+                } else {
+                    showError('queryResults', result.error);
+                }
+            } catch (error) {
+                showError('queryResults', error.message);
+            }
+        }
+        
+        async function createCar() {
+            const carNumber = document.getElementById('createCarNumber').value.trim();
+            const make = document.getElementById('createMake').value.trim();
+            const model = document.getElementById('createModel').value.trim();
+            const color = document.getElementById('createColor').value.trim();
+            const owner = document.getElementById('createOwner').value.trim();
+            const year = document.getElementById('createYear').value;
+            const mileage = document.getElementById('createMileage').value;
+            const price = document.getElementById('createPrice').value;
+            
+            if (!carNumber || !make || !model || !color || !owner) {
+                showError('createResults', 'Please fill in all required fields');
+                return;
+            }
+            
+            showLoading('createResults');
+            try {
+                const carData = { carNumber, make, model, color, owner };
+                if (year) carData.year = parseInt(year);
+                if (mileage) carData.mileage = parseInt(mileage);
+                if (price) carData.price = parseFloat(price);
+                
+                const response = await fetch(`${API_BASE}/cars`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(carData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showSuccess('createResults', result.message);
+                    // Clear form
+                    document.getElementById('createCarNumber').value = '';
+                    document.getElementById('createMake').value = '';
+                    document.getElementById('createModel').value = '';
+                    document.getElementById('createColor').value = '';
+                    document.getElementById('createOwner').value = '';
+                    document.getElementById('createYear').value = '';
+                    document.getElementById('createMileage').value = '';
+                    document.getElementById('createPrice').value = '';
+                } else {
+                    showError('createResults', result.error);
+                }
+            } catch (error) {
+                showError('createResults', error.message);
+            }
+        }
+        
+        async function changeOwner() {
+            const carNumber = document.getElementById('changeCarNumber').value.trim();
+            const newOwner = document.getElementById('newOwner').value.trim();
+            
+            if (!carNumber || !newOwner) {
+                showError('changeResults', 'Please fill in all required fields');
+                return;
+            }
+            
+            showLoading('changeResults');
+            try {
+                const response = await fetch(`${API_BASE}/cars/${carNumber}/owner`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ newOwner })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showSuccess('changeResults', result.message);
+                    // Clear form
+                    document.getElementById('changeCarNumber').value = '';
+                    document.getElementById('newOwner').value = '';
+                } else {
+                    showError('changeResults', result.error);
+                }
+            } catch (error) {
+                showError('changeResults', error.message);
+            }
+        }
+        
+        async function initializeLedger() {
+            showLoading('initResults');
+            try {
+                const response = await fetch(`${API_BASE}/init`, {
+                    method: 'POST'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showSuccess('initResults', result.message);
+                } else {
+                    showError('initResults', result.error);
+                }
+            } catch (error) {
+                showError('initResults', error.message);
+            }
+        }
+        
+        // Load all cars on page load
+        window.addEventListener('load', () => {
+            queryAllCars();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+{
+  "name": "fabcar-blockchain-app",
+  "version": "1.0.0",
+  "description": "A comprehensive Hyperledger Fabric v1.4 blockchain application for decentralized car ownership management. 100% blockchain-based with smart contracts, multi-organization consensus, and REST API.",
+  "main": "fabcar-app/enhanced-client/app.js",
+  "scripts": {
+    "start": "cd fabcar-app/enhanced-client && node app.js",
+    "setup": "cd fabcar-app && ./setup.sh",
+    "network:start": "cd fabcar-app && ./start-network.bat",
+    "network:stop": "cd fabcar-app/first-network && ./byfn.sh down",
+    "enroll": "cd fabcar-app/enhanced-client && node enrollAdmin.js && node registerUser.js",
+    "test:query": "cd fabcar-app/enhanced-client && node query.js all",
+    "test:invoke": "cd fabcar-app/enhanced-client && node invoke.js createCar TEST_CAR Honda Civic blue TestOwner",
+    "test:api": "cd fabcar-app/enhanced-client && curl http://localhost:3000/api/health",
+    "clean": "docker system prune -f && docker volume prune -f"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/fabcar-blockchain-app.git"
+  },
+  "keywords": [
+    "blockchain",
+    "hyperledger-fabric",
+    "smart-contracts",
+    "nodejs",
+    "docker",
+    "distributed-ledger",
+    "rest-api",
+    "chaincode",
+    "couchdb",
+    "cryptocurrency",
+    "decentralized",
+    "car-ownership",
+    "fabric-network",
+    "consensus",
+    "immutable"
+  ],
+  "author": "Your Name <your.email@domain.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yourusername/fabcar-blockchain-app/issues"
+  },
+  "homepage": "https://github.com/yourusername/fabcar-blockchain-app#readme",
+  "engines": {
+    "node": ">=12.22.12 <13.0.0",
+    "npm": ">=6.14.16"
+  },
+  "os": [
+    "win32",
+    "darwin",
+    "linux"
+  ],
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "nodemon": "^2.0.22"
+  },
+  "dependencies": {
+    "fabric-network": "^1.4.19",
+    "fabric-ca-client": "^1.4.19",
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "body-parser": "^1.20.2",
+    "winston": "^3.8.2"
+  },
+  "peerDependencies": {
+    "docker": ">=20.10.0",
+    "docker-compose": ">=1.29.0"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/yourusername"
+  }
+}
